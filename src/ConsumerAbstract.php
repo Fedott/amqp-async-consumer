@@ -2,6 +2,7 @@
 
 namespace Fedot\Amqp;
 
+use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Message\AMQPMessage;
 use PhpAmqpLib\Wire\IO\SocketIO;
 use React\EventLoop\LoopInterface;
@@ -31,6 +32,20 @@ abstract class ConsumerAbstract extends AmqpAbstract
      */
     protected $isProcessing = false;
 
+    public function __construct(
+        LoopInterface $eventLoop,
+        AMQPStreamConnection $connection,
+        array $queues,
+        array $exchangeOptions = null,
+        array $queueOptions = null,
+        array $qosOptions = null
+    ) {
+        $this->eventLoop = $eventLoop;
+        $this->setQueues($queues);
+
+        parent::__construct($connection, $exchangeOptions, $queueOptions, $qosOptions);
+    }
+
     public function stop(): void
     {
         if (!$this->isProcessing) {
@@ -41,7 +56,7 @@ abstract class ConsumerAbstract extends AmqpAbstract
     }
 
     /**
-     * @param Queue[]|\string[] $queues
+     * @param Queue[]|\string[]|string[][] $queues
      */
     public function setQueues(array $queues): void
     {
@@ -54,6 +69,7 @@ abstract class ConsumerAbstract extends AmqpAbstract
                     $queue = new Queue($queue);
                 }
             }
+
             $this->queues[$queue->getHash()] = $queue;
         }
     }

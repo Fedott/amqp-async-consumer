@@ -2,6 +2,7 @@
 
 use Fedot\Amqp\ConsumerAbstract;
 use Fedot\Amqp\ProducerAbstract;
+use Fedot\Amqp\Queue;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Message\AMQPMessage;
 use PHPUnit\Framework\TestCase;
@@ -15,11 +16,12 @@ class IntegratedTest extends TestCase
         $eventLoop = new StreamSelectLoop();
         $connection = new AMQPStreamConnection("localhost", "5672", "guest", "guest", "/test/");
 
-        $producer = new ProducerAbstract();
-        $producer->setConnection($connection);
-        $producer->setExchange('test-exchange');
-        $producer->setDefaultQueues([new \Fedot\Amqp\Queue('test-queue')]);
-        $consumer = new class extends ConsumerAbstract
+        $producer = new ProducerAbstract(
+            $connection,
+            'test-exchange',
+            [new Queue('test-queue')]
+        );
+        $consumer = new class($eventLoop, $connection, ['test-queue']) extends ConsumerAbstract
         {
             public $consumed = 0;
 
@@ -36,9 +38,6 @@ class IntegratedTest extends TestCase
                 parent::consumeCancel();
             }
         };
-        $consumer->setConnection($connection);
-        $consumer->setEventLoop($eventLoop);
-        $consumer->setQueues(['test-queue']);
 
         $message1 = new AMQPMessage('message first');
         $producer->publish($message1);

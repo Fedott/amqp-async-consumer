@@ -50,9 +50,16 @@ abstract class AmqpAbstract
         'global' => null,
     ];
 
-    public function setConnection(AMQPStreamConnection $connection): void
-    {
+    public function __construct(
+        AMQPStreamConnection $connection,
+        array $exchangeOptions = null,
+        array $queueOptions = null,
+        array $qosOptions = null
+    ) {
         $this->connection = $connection;
+        $exchangeOptions !== null && $this->setExchangeOptions($exchangeOptions);
+        $queueOptions !== null && $this->setQueueOptions($queueOptions);
+        $qosOptions !== null && $this->setQosOptions($qosOptions);
     }
 
     public function setExchangeOptions(array $options): void

@@ -2,6 +2,7 @@
 
 namespace Fedot\Amqp;
 
+use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Message\AMQPMessage;
 
 class ProducerAbstract extends AmqpAbstract
@@ -20,6 +21,20 @@ class ProducerAbstract extends AmqpAbstract
      * @var bool
      */
     protected $channelReady = false;
+
+    public function __construct(
+        AMQPStreamConnection $connection,
+        string $exchange,
+        array $defaultQueues = [],
+        array $exchangeOptions = null,
+        array $queueOptions = null,
+        array $qosOptions = null
+    ) {
+        $this->exchange = $exchange;
+        $this->setDefaultQueues($defaultQueues);
+
+        parent::__construct($connection, $exchangeOptions, $queueOptions, $qosOptions);
+    }
 
     public function getExchange(): string
     {
@@ -47,11 +62,7 @@ class ProducerAbstract extends AmqpAbstract
         $this->defaultQueues = $defaultQueues;
     }
 
-    /**
-     * @param AMQPMessage $message
-     * @param string      $routingKey
-     */
-    public function publish(AMQPMessage $message, $routingKey = '')
+    public function publish(AMQPMessage $message, string $routingKey = ''): void
     {
         if (!$this->channelReady) {
             $this->prepareChannel();
@@ -78,12 +89,7 @@ class ProducerAbstract extends AmqpAbstract
         $this->channelReady = true;
     }
 
-    /**
-     * Initial channel
-     *
-     * @return void
-     */
-    protected function initChannel()
+    protected function initChannel(): void
     {
         $this->exchangeDeclare($this->getExchange());
         if (!empty($this->getDefaultQueues())) {
