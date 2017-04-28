@@ -50,18 +50,12 @@ abstract class AmqpAbstract
         'global' => null,
     ];
 
-    /**
-     * @param AMQPStreamConnection $connection
-     */
-    public function setConnection(AMQPStreamConnection $connection)
+    public function setConnection(AMQPStreamConnection $connection): void
     {
         $this->connection = $connection;
     }
 
-    /**
-     * @param array $options
-     */
-    public function setExchangeOptions($options)
+    public function setExchangeOptions(array $options): void
     {
         $this->exchangeOptions = array_merge(
             $this->exchangeOptions,
@@ -69,10 +63,7 @@ abstract class AmqpAbstract
         );
     }
 
-    /**
-     * @param array $options
-     */
-    public function setQueueOptions($options)
+    public function setQueueOptions(array $options): void
     {
         $this->queueOptions = array_merge(
             $this->queueOptions,
@@ -80,10 +71,7 @@ abstract class AmqpAbstract
         );
     }
 
-    /**
-     * @param array $options
-     */
-    public function setQosOptions($options)
+    public function setQosOptions(array $options): void
     {
         $this->qosOptions = array_merge(
             $this->queueOptions,
@@ -91,18 +79,12 @@ abstract class AmqpAbstract
         );
 	}
 
-	/**
-     * @return AMQPStreamConnection
-     */
-    public function getConnection()
+    public function getConnection(): AMQPStreamConnection
     {
         return $this->connection;
     }
 
-    /**
-     * @return AMQPChannel
-     */
-    protected function getChannel()
+    protected function getChannel(): AMQPChannel
     {
         if (null === $this->channel) {
             $this->prepareChannel();
@@ -111,16 +93,13 @@ abstract class AmqpAbstract
         return $this->channel;
     }
 
-    protected function closeChannel()
+    protected function closeChannel(): void
     {
         $this->getChannel()->close();
         $this->channel = null;
     }
 
-    /**
-     * @param string $queueName
-     */
-    protected function queueDeclare($queueName)
+    protected function queueDeclare(string $queueName): void
     {
         $this->getChannel()->queue_declare(
             $queueName,
@@ -134,10 +113,7 @@ abstract class AmqpAbstract
         );
     }
 
-    /**
-     * @param string $exchangeName
-     */
-    protected function exchangeDeclare($exchangeName)
+    protected function exchangeDeclare(string $exchangeName): void
     {
         $this->getChannel()->exchange_declare(
             $exchangeName,
@@ -152,12 +128,7 @@ abstract class AmqpAbstract
         );
     }
 
-    /**
-     * @param string $queueName
-     * @param string $exchangeName
-     * @param string $routingKey
-     */
-    protected function queueBind($queueName, $exchangeName, $routingKey = '')
+    protected function queueBind(string $queueName, string $exchangeName, string $routingKey = ''): void
     {
         $this->getChannel()->queue_bind(
             $queueName,
@@ -166,12 +137,7 @@ abstract class AmqpAbstract
         );
     }
 
-    /**
-     * @param string $queueName
-     * @param string $exchangeName
-     * @param string $routingKey
-     */
-    protected function queueUnbind($queueName, $exchangeName, $routingKey = '')
+    protected function queueUnbind(string $queueName, string $exchangeName, string $routingKey = ''): void
     {
         $this->getChannel()->queue_unbind(
             $queueName,
@@ -180,21 +146,17 @@ abstract class AmqpAbstract
         );
     }
 
-    protected function prepareChannel()
+    protected function prepareChannel(): void
     {
         $this->channel = $this->getConnection()->channel();
     }
 
-    /**
-     * @param string $queue
-     * @return void
-     */
-    protected function queueDelete($queue)
+    protected function queueDelete(string $queue): void
     {
         $this->getChannel()->queue_delete($queue);
     }
 
-    protected function applyQosOptions()
+    protected function applyQosOptions(): void
     {
         $this->getChannel()->basic_qos(
             $this->qosOptions['prefetch_size'],

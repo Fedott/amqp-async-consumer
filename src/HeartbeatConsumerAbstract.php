@@ -5,7 +5,7 @@ namespace Fedot\Amqp;
 use PhpAmqpLib\Message\AMQPMessage;
 use React\EventLoop\Timer\TimerInterface;
 
-abstract class ReactHeartbeatConsumerAbstract extends ReactConsumerAbstract
+abstract class HeartbeatConsumerAbstract extends ConsumerAbstract
 {
     /**
      * @var TimerInterface

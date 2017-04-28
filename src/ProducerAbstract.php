@@ -21,18 +21,12 @@ class ProducerAbstract extends AmqpAbstract
      */
     protected $channelReady = false;
 
-    /**
-     * @return string
-     */
-    public function getExchange()
+    public function getExchange(): string
     {
         return $this->exchange;
     }
 
-    /**
-     * @param string $exchange
-     */
-    public function setExchange($exchange)
+    public function setExchange(string $exchange): void
     {
         $this->exchange = $exchange;
     }
@@ -71,7 +65,7 @@ class ProducerAbstract extends AmqpAbstract
         }
     }
 
-    protected function prepareChannel()
+    protected function prepareChannel(): void
     {
         if (null !== $this->channel) {
             $this->getConnection()->reconnect();
