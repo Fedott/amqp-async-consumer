@@ -30,14 +30,14 @@ abstract class HeartbeatConsumerAbstract extends ConsumerAbstract
         $this->heartbeatInterval = $heartbeatInterval;
     }
 
-    protected function preConsume()
+    protected function preConsume(): void
     {
         parent::preConsume();
 
         $this->heartbeatTimer = $this->eventLoop->addPeriodicTimer(1, [$this, 'sendHeartbeat']);
     }
 
-    protected function finishConsume()
+    protected function finishConsume(): void
     {
         $this->eventLoop->cancelTimer($this->heartbeatTimer);
 
@@ -60,10 +60,7 @@ abstract class HeartbeatConsumerAbstract extends ConsumerAbstract
         }
     }
 
-    /**
-     * @return callable
-     */
-    protected function getProcessCallback()
+    protected function getProcessCallback(): callable
     {
         return [$this, 'processMessageWithHeartbeatCheck'];
     }

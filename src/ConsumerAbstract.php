@@ -19,14 +19,17 @@ abstract class ConsumerAbstract extends AmqpAbstract
      * @var Queue[]
      */
     protected $queues = [];
+
     /**
      * @var LoopInterface
      */
     protected $eventLoop;
+
     /**
      * @var TimerInterface
      */
     protected $checkTimer;
+
     /**
      * @var bool
      */
