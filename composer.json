@@ -1,5 +1,5 @@
 {
-    "name": "fedot/ampq-react",
+    "name": "fedot/amqp-async-consumer",
     "type": "library",
     "autoload": {
         "psr-4": {
