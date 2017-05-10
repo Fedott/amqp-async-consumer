@@ -5,7 +5,7 @@ namespace Fedot\Amqp;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Message\AMQPMessage;
 
-class ProducerAbstract extends AmqpAbstract
+class Producer extends AmqpAbstract
 {
     /**
      * @var string

@@ -1,7 +1,7 @@
 <?php declare(strict_types=1);
 
 use Fedot\Amqp\ConsumerAbstract;
-use Fedot\Amqp\ProducerAbstract;
+use Fedot\Amqp\Producer;
 use Fedot\Amqp\Queue;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Message\AMQPMessage;
@@ -16,7 +16,7 @@ class IntegratedTest extends TestCase
         $eventLoop = new StreamSelectLoop();
         $connection = new AMQPStreamConnection("localhost", "5672", "guest", "guest", "/test/");
 
-        $producer = new ProducerAbstract(
+        $producer = new Producer(
             $connection,
             'test-exchange',
             [new Queue('test-queue')]
