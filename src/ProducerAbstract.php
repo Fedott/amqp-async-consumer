@@ -55,11 +55,22 @@ class ProducerAbstract extends AmqpAbstract
     }
 
     /**
-     * @param Queue[] $defaultQueues
+     * @param Queue[]|string[][]|string[] $defaultQueues
      */
     public function setDefaultQueues(array $defaultQueues)
     {
-        $this->defaultQueues = $defaultQueues;
+        $queues = [];
+        foreach ($defaultQueues as $queue) {
+            if ($queue instanceof Queue) {
+                $queues[] = $queue;
+            } elseif (is_array($queue)) {
+                $queues[] = new Queue($queue[0], $queue[1] ?? null, $queue[2] ?? '');
+            } else {
+                $queues[] = new Queue($queue);
+            }
+        }
+
+        $this->defaultQueues = $queues;
     }
 
     public function publish(AMQPMessage $message, string $routingKey = ''): void
